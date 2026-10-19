@@ -351,3 +351,447 @@ function typedBlock({ phrases, x, base, size, fill, curH, curW }) {
   let clips = '', texts = '';
   const curT = [0], curX = [x];
   phrases.forEach((ph, p) => {
+    const n = [...ph].length;
+    const ts = p * slot;
+    const times = [0], widths = [0];
+    for (let k = 1; k <= n; k++) { const t = ts + lead + k * step; times.push(t); widths.push(k * adv); curT.push(t); curX.push(x + k * adv); }
+    times.push(ts + slot - hideAt); widths.push(0);
+    curT.push(ts + slot - hideAt); curX.push(x);
+    times.push(D); widths.push(0);
+    const id = `tc${p}`;
+    const w0 = p === 0 ? n * adv : 0;
+    clips += `<clipPath id="${id}"><rect x="${f1(x)}" y="${f1(base - size)}" width="${f1(w0)}" height="${f1(size * 1.5)}"><animate attributeName="width" dur="${D}s" repeatCount="indefinite" calcMode="discrete" keyTimes="${times.map(kt).join(';')}" values="${widths.map(f1).join(';')}"/></rect></clipPath>`;
+    texts += `<g clip-path="url(#${id})">${T(font, ph, { size, x, y: base, fill })}</g>`;
+  });
+  curT.push(D); curX.push(x);
+  const n0 = [...phrases[0]].length;
+  const cursor = `<rect x="${f1(x + n0 * adv + 2)}" y="${f1(base - curH + 3)}" width="${curW}" height="${curH}" fill="${fill}"><animate attributeName="x" dur="${D}s" repeatCount="indefinite" calcMode="discrete" keyTimes="${curT.map(kt).join(';')}" values="${curX.map((v) => f1(v + 2)).join(';')}"/><animate attributeName="opacity" dur="0.9s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.5" values="1;0"/></rect>`;
+  return clips + texts + cursor;
+}
+
+function bannerSVG(cfg) {
+  const W = 800, cx = 24, cy = 24, cw = 744, ch = 264, H = cy + ch + 30;
+  let b = card(cx, cy, cw, ch, { r: 20, sh: 8, sw: 4 });
+  // dekorasi
+  const plus = (x, y, s = 7) => `<path d="M${x - s} ${y}H${x + s}M${x} ${y - s}V${y + s}" stroke="${C.ink}" stroke-width="3" stroke-linecap="round"/>`;
+  b += plus(cx + 452, cy + 34) + plus(cx + 712, cy + 38, 6) + plus(cx + 600, cy + 118, 5);
+
+  // avatar + nama
+  const ax = cx + 32, ay = cy + 28;
+  b += `<rect x="${ax + 4}" y="${ay + 4}" width="76" height="76" rx="14" fill="${C.yellow}"/>`;
+  b += `<rect x="${ax}" y="${ay}" width="76" height="76" rx="14" fill="${C.ink}"/>`;
+  b += T(fonts.grot, cfg.name[0].toUpperCase(), { size: 50, x: ax + 38, y: ay + 38 + CAP * 25, anchor: 'middle', fill: C.cream });
+  const nameSize = 68, nameStr = cfg.name.toUpperCase();
+  const nx = ax + 76 + 26, nBase = ay + 38 + (CAP * nameSize) / 2 - 2;
+  const nW = W_(fonts.grot, nameStr, nameSize);
+  b += `<rect x="${f1(nx - 8)}" y="${f1(nBase - CAP * nameSize * 0.5)}" width="${f1(nW + 16)}" height="${f1(CAP * nameSize * 0.5 + 9)}" fill="${C.yellow}" transform="rotate(-1.4 ${f1(nx)} ${f1(nBase)})"/>`;
+  b += T(fonts.grot, nameStr, { size: nameSize, x: nx, y: nBase });
+
+  // tile melayang di kanan
+  const fl = [
+    { x: cx + 468, y: cy + 52, col: 'yellow', ik: 'store', rot: -8, d: 0 },
+    { x: cx + 548, y: cy + 36, col: 'blue', ik: 'bot', rot: 6, d: 0.45 },
+    { x: cx + 628, y: cy + 56, col: 'green', ik: 'code', rot: -4, d: 0.9 },
+  ];
+  for (const f of fl) {
+    b += `<g transform="rotate(${f.rot} ${f.x + 33} ${f.y + 33})"><g class="float" style="animation-delay:${f.d}s">${tile(f.x, f.y, 66, f.col, { ik: f.ik, k: 0.56, sh: 5, r: 14 })}</g></g>`;
+  }
+
+  // chip peran + handle
+  const ry = cy + 124;
+  let rx = cx + 32;
+  for (const [label, col] of cfg.roles) {
+    const c = chip(label, rx, ry, { h: 34, size: 13.5, fill: C[col], color: ICOLOR[col] });
+    b += c.svg; rx += c.w + 14;
+  }
+  b += chip(cfg.handle.toUpperCase(), cx + cw - 32, ry, { h: 34, size: 13.5, anchor: 'end' }).svg;
+
+  // terminal
+  const bx = cx + 32, by = cy + 178, bw = cw - 64, bh = 58;
+  b += `<rect x="${bx + 4}" y="${by + 4}" width="${bw}" height="${bh}" rx="12" fill="${C.yellow}"/>`;
+  b += `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="12" fill="${C.ink}"/>`;
+  [C.pink, C.yellow, C.green].forEach((col, i) => { b += `<circle cx="${bx + 24 + i * 19}" cy="${by + bh / 2}" r="5.5" fill="${col}"/>`; });
+  const px = bx + 100;
+  b += T(fonts.monoB, '>', { size: 22, x: px, y: by + bh / 2 + 7.5, fill: C.green });
+  b += typedBlock({ phrases: cfg.typing, x: px + 26, base: by + bh / 2 + 7.5, size: 22, fill: C.yellow, curH: 24, curW: 11 });
+  const st = cfg.status.toUpperCase();
+  const sw_ = W_(fonts.monoB, st, 12, 1.5);
+  b += `<circle class="pulse" cx="${bx + bw - 26 - sw_ - 12}" cy="${by + bh / 2}" r="4.5" fill="${C.green}"/>`;
+  b += T(fonts.monoB, st, { size: 12, x: bx + bw - 22, y: by + bh / 2 + 4.2, anchor: 'end', fill: C.cream, ls: 1.5 });
+
+  return svgDoc(W, H, {
+    title: `${cfg.name} — ${cfg.roles.map((r) => r[0]).join(', ')}`,
+    desc: `Banner profil ${cfg.name} (${cfg.handle}). ${cfg.typing.join('. ')}.`,
+    body: b,
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   2) ABOUT
+   ════════════════════════════════════════════════════════════════════════ */
+function aboutSVG(cfg) {
+  const W = 800, x0 = 24, cw = 746, gap = 22, cardW = (cw - gap) / 2, cardH = 156;
+  let b = sectionTab(x0, 22, 'TENTANG SAYA', cw);
+  cfg.about.forEach((a, i) => {
+    const x = x0 + (i % 2) * (cardW + gap);
+    const y = 76 + Math.floor(i / 2) * (cardH + gap);
+    let g = card(x, y, cardW, cardH, { bar: C[a.color], barH: 10 });
+    g += tile(x + 20, y + 20, 54, a.color, { ik: a.icon, k: 0.54 });
+    g += chip(a.chip, x + cardW - 20, y + 24, { h: 30, size: 12, anchor: 'end', ls: 1, padX: 11 }).svg;
+    g += T(fonts.grot, a.title.toUpperCase(), { size: 27, x: x + 22, y: y + 108, maxW: cardW - 44 });
+    g += T(fonts.mono, a.text.toUpperCase(), { size: 13.5, x: x + 22, y: y + 132, fill: C.gray, ls: 0.8, maxW: cardW - 44 });
+    b += `<g class="rise" style="animation-delay:${(i * 0.09).toFixed(2)}s">${g}</g>`;
+  });
+  // CTA
+  const cy = 76 + 2 * (cardH + gap) + 2, cH = 76;
+  b += `<g class="rise" style="animation-delay:.4s">${card(x0, cy, cw, cH, { fill: C.yellow, r: 18 })}`;
+  b += `<circle cx="${x0 + 52}" cy="${cy + cH / 2}" r="25" fill="${C.ink}"/>`;
+  b += icon('chat', x0 + 52 - 14, cy + cH / 2 - 14, 28, C.yellow, 2.2);
+  b += T(fonts.grot, cfg.cta, { size: 22, x: x0 + 96, y: cy + cH / 2 + 8, maxW: cw - 96 - 150 });
+  b += chip('CHAT SAYA', x0 + cw - 24, cy + cH / 2 - 17, { h: 34, size: 12.5, fill: C.paper, anchor: 'end', padX: 14 }).svg;
+  b += '</g>';
+  const H = cy + cH + 6 + 24;
+  return svgDoc(W, H, { title: 'Tentang saya', desc: cfg.about.map((a) => `${a.title}: ${a.text}`).join('. ') + `. ${cfg.cta}.`, body: b });
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   3) STACK
+   ════════════════════════════════════════════════════════════════════════ */
+const STACK_STYLE = {
+  html: { brand: 'siHtml5', color: 'orange' }, css: { brand: 'siCss', color: 'blue' }, js: { brand: 'siJavascript', color: 'yellow' },
+  react: { brand: 'siReact', color: 'cyan' }, vite: { brand: 'siVite', color: 'purple' }, node: { brand: 'siNodedotjs', color: 'green' },
+  git: { brand: 'siGit', color: 'pink' }, github: { brand: 'siGithub', color: 'ink' }, vercel: { brand: 'siVercel', color: 'paper' },
+};
+
+function stackSVG(cfg) {
+  const W = 800, cx = 24, cy = 24, cw = 744;
+  const groups = cfg.stack;
+  const hdr = cardHeader(cx, cy, cw, { colorKey: 'blue', ik: 'code', title: 'TECH STACK', sub: 'Teknologi yang saya gunakan sehari-hari' });
+  const gx = cx + 28, gw = cw - 56, gh = 176, gap = 20;
+  const tS = 76;
+  let idx = 0;
+  const groupSvg = (g, x, y, w, tileGap) => {
+    let s = `<rect x="${x}" y="${y}" width="${w}" height="${gh}" rx="14" fill="${C.chart}" stroke="${C.ink}" stroke-width="3"/>`;
+    const c = chip(g.label, x + 16, y + 16, { h: 30, size: 12.5, fill: C[g.color], color: ICOLOR[g.color], padX: 12 });
+    s += c.svg;
+    s += T(fonts.monoB, String(g.items.length).padStart(2, '0'), { size: 12, x: x + w - 18, y: y + 35, anchor: 'end', fill: C.gray, ls: 1 });
+    const total = g.items.length * tS + (g.items.length - 1) * tileGap;
+    let tx = x + (w - total) / 2;
+    for (const [key, label] of g.items) {
+      const st = STACK_STYLE[key];
+      if (!st) throw new Error(`Ikon stack tidak dikenal: ${key}`);
+      s += `<g class="float" style="animation-delay:${(idx++ * 0.28).toFixed(2)}s">${tile(tx, y + 62, tS, st.color, { bk: st.brand, k: 0.56, r: 14, sh: 4.5 })}</g>`;
+      s += T(fonts.monoB, label.toUpperCase(), { size: 12.5, x: tx + tS / 2, y: y + 62 + tS + 24, anchor: 'middle', ls: 0.6, maxW: tS + tileGap - 6 });
+      tx += tS + tileGap;
+    }
+    return s;
+  };
+  let y = hdr.next;
+  let b = groupSvg(groups[0], gx, y, gw, 46);
+  y += gh + gap;
+  const hw = (gw - gap) / 2;
+  b += groupSvg(groups[1], gx, y, hw, 24);
+  b += groupSvg(groups[2], gx + hw + gap, y, hw, 24);
+  const ch = y + gh + 28 - cy;
+  const body = card(cx, cy, cw, ch, { r: 20, sh: 8, sw: 4 }) + hdr.svg + b;
+  return svgDoc(W, cy + ch + 30, { title: 'Tech stack', desc: groups.map((g) => `${g.label}: ${g.items.map((i) => i[1]).join(', ')}`).join('. '), body });
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   4) STATS
+   ════════════════════════════════════════════════════════════════════════ */
+function statsSVG(cfg, data) {
+  const W = 800, x0 = 24, cw = 746, gap = 24;
+  const v = (n) => (data ? fmtNum(n) : '—');
+  let b = sectionTab(x0, 22, 'STATISTIK GITHUB', cw);
+  const big = (x, y, w, h, o, delay) => {
+    let s = card(x, y, w, h, { bar: C[o.color], barH: 10 });
+    s += tile(x + 20, y + 20, 58, o.color, { ik: o.ik, k: 0.54 });
+    s += chip(o.chip, x + w - 20, y + 24, { h: 32, size: 12.5, anchor: 'end', dot: o.dot }).svg;
+    s += T(fonts.monoB, o.value, { size: 58, x: x + 22, y: y + 134, maxW: w - 44 });
+    s += T(fonts.mono, o.caption, { size: 13.5, x: x + 23, y: y + 159, fill: C.gray, ls: 1.1, maxW: w - 44 });
+    return `<g class="rise" style="animation-delay:${delay}s">${s}</g>`;
+  };
+  const cwHalf = (cw - gap) / 2, hA = 184, yA = 76;
+  b += big(x0, yA, cwHalf, hA, { color: 'blue', ik: 'commit', chip: '12 BULAN', value: v(data?.contributions), caption: 'TOTAL KONTRIBUSI' }, 0);
+  b += big(x0 + cwHalf + gap, yA, cwHalf, hA, { color: 'green', ik: 'repo', chip: 'PUBLIK', dot: C.green, value: v(data?.repos), caption: 'REPOSITORI AKTIF' }, 0.1);
+
+  // bar streak
+  const yB = yA + hA + gap + 2, hB = 104;
+  const st = data ? streaks(data.days) : { current: NaN, longest: NaN };
+  let s = card(x0, yB, cw, hB, { r: 18 });
+  s += tile(x0 + 20, yB + 20, 62, 'yellow', { ik: 'flame', k: 0.56 });
+  s += T(fonts.mono, 'STREAK KONTRIBUSI SAAT INI', { size: 13, x: x0 + 104, y: yB + 30, fill: C.gray, ls: 1.2 });
+  const val = data ? `${st.current} HARI` : '—';
+  const vw = Math.max(150, W_(fonts.monoB, val, 24) + 36);
+  s += `<rect x="${x0 + 104 + 3.5}" y="${yB + 42 + 3.5}" width="${f1(vw)}" height="42" rx="8" fill="${C.ink}"/>`;
+  s += `<rect x="${x0 + 104}" y="${yB + 42}" width="${f1(vw)}" height="42" rx="8" fill="${C.soft}" stroke="${C.ink}" stroke-width="3"/>`;
+  s += T(fonts.monoB, val, { size: 24, x: x0 + 104 + 18, y: yB + 42 + 21 + 8.4 });
+  const active = data && st.current > 0;
+  const c2 = chip(!data ? 'MENUNGGU DATA' : active ? 'AKTIF' : 'ISTIRAHAT', x0 + cw - 24, yB + 32, { h: 40, size: 13, fill: C.yellow, anchor: 'end', dot: active ? C.green : C.ink, padX: 16 });
+  s += c2.svg;
+  s += chip(`TERPANJANG ${data ? st.longest : '—'}`, c2.x - 18, yB + 32, { h: 40, size: 13, fill: C.paper, anchor: 'end', padX: 16 }).svg;
+  b += `<g class="rise" style="animation-delay:.2s">${s}</g>`;
+
+  // 4 kartu kecil
+  const yC = yB + hB + gap + 2, hC = 124, wC = (cw - 3 * 18) / 4;
+  const minis = [
+    { color: 'yellow', ik: 'star', value: v(data?.stars), cap: 'STARS DITERIMA' },
+    { color: 'cyan', ik: 'users', value: v(data?.followers), cap: 'FOLLOWERS' },
+    { color: 'purple', ik: 'pr', value: v(data?.prs), cap: 'PULL REQUEST' },
+    { color: 'pink', ik: 'issue', value: v(data?.issues), cap: 'ISSUES' },
+  ];
+  minis.forEach((m, i) => {
+    const x = x0 + i * (wC + 18);
+    let g = card(x, yC, wC, hC, { r: 16, bar: C[m.color], barH: 9 });
+    g += tile(x + 16, yC + 14, 40, m.color, { ik: m.ik, k: 0.56, r: 10, sh: 3, sw: 2.5 });
+    g += T(fonts.monoB, m.value, { size: 30, x: x + 18, y: yC + 91, maxW: wC - 36 });
+    g += T(fonts.mono, m.cap, { size: 11.5, x: x + 18, y: yC + 108, fill: C.gray, ls: 0.7, maxW: wC - 36 });
+    b += `<g class="rise" style="animation-delay:${(0.3 + i * 0.08).toFixed(2)}s">${g}</g>`;
+  });
+  const H = yC + hC + 6 + 26;
+  return svgDoc(W, H, {
+    title: `Statistik GitHub ${cfg.handle}`,
+    desc: data ? `Kontribusi 12 bulan: ${data.contributions}. Repositori: ${data.repos}. Streak: ${st.current} hari (terpanjang ${st.longest}). Stars: ${data.stars}. Followers: ${data.followers}. Pull request: ${data.prs}. Issues: ${data.issues}.` : 'Data statistik belum tersedia.',
+    body: b,
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   5) ACTIVITY (grafik batang 7 hari — gaya "Statistik Penambahan")
+   ════════════════════════════════════════════════════════════════════════ */
+function activitySVG(cfg, data) {
+  const W = 800, cx = 24, cy = 24, cw = 744;
+  let days;
+  if (data && data.days.length >= 14) days = data.days.slice(-14);
+  else days = Array.from({ length: 14 }, (_, i) => ({ date: new Date(NOW.getTime() - (13 - i) * 864e5).toISOString().slice(0, 10), count: 0 }));
+  const prev = days.slice(0, 7).reduce((a, d) => a + d.count, 0);
+  const cur7 = days.slice(7);
+  const curSum = cur7.reduce((a, d) => a + d.count, 0);
+  const maxV = Math.max(1, ...cur7.map((d) => d.count));
+
+  const hdr = cardHeader(cx, cy, cw, { colorKey: 'yellow', ik: 'chart', title: 'KONTRIBUSI 7 HARI', sub: 'Aktivitas kontribusi GitHub 7 hari terakhir' });
+  let b = hdr.svg;
+  const bx = cx + 28, by = cy + 128, bw = cw - 56, bh = 236;
+  b += `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="14" fill="${C.chart}"/>`;
+  const colW = bw / 7;
+  for (let i = 1; i <= 3; i++) b += `<rect x="${bx + 2}" y="${f1(by + (bh / 4) * i)}" width="${bw - 4}" height="1.6" fill="${C.grid}"/>`;
+  for (let i = 1; i < 7; i++) b += `<rect x="${f1(bx + colW * i - 0.8)}" y="${by + 2}" width="1.6" height="${bh - 4}" fill="${C.grid}"/>`;
+  const base = by + bh - 20, maxH = bh - 20 - 54, barW = 62;
+  cur7.forEach((d, i) => {
+    const col = i % 2 === 0 ? C.blue : C.yellow;
+    const h = d.count === 0 ? 8 : Math.max(14, (d.count / maxV) * maxH);
+    const x = bx + colW * i + (colW - barW) / 2, y = base - h;
+    b += `<g class="grow" style="animation-delay:${(i * 0.08).toFixed(2)}s"><rect x="${f1(x + 3.5)}" y="${f1(y + 3.5)}" width="${barW}" height="${f1(h)}" rx="7" fill="${C.ink}"/><rect x="${f1(x)}" y="${f1(y)}" width="${barW}" height="${f1(h)}" rx="7" fill="${col}" stroke="${C.ink}" stroke-width="3"/></g>`;
+    const label = String(d.count);
+    const bwid = Math.max(36, W_(fonts.monoB, label, 15) + 18);
+    b += `<g class="bob" style="animation-delay:${(i * 0.22).toFixed(2)}s"><rect x="${f1(x + barW / 2 - bwid / 2)}" y="${f1(y - 42)}" width="${f1(bwid)}" height="30" rx="7" fill="${C.badge}"/>`;
+    b += T(fonts.monoB, label, { size: 15, x: x + barW / 2, y: y - 42 + 15 + 5.3, anchor: 'middle', fill: C.yellow }) + '</g>';
+    const isToday = i === 6;
+    b += T(fonts.monoB, dmy(d.date), { size: 14, x: bx + colW * i + colW / 2, y: by + bh + 32, anchor: 'middle', fill: isToday ? C.ink : C.gray, ls: 1.2 });
+  });
+  b += `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="14" fill="none" stroke="${C.ink}" stroke-width="3.5"/>`;
+
+  // footer
+  const fy = by + bh + 54;
+  let dir = 0, pct = '0%';
+  if (prev === 0 && curSum > 0) { dir = 1; pct = 'BARU'; }
+  else if (prev > 0) { const p = Math.round(((curSum - prev) / prev) * 100); dir = p > 0 ? 1 : p < 0 ? -1 : 0; pct = `${Math.abs(p)}%`; }
+  const tw = W_(fonts.monoB, pct, 14, 0.5);
+  b += `<rect x="${bx}" y="${fy}" width="${f1(tw + 52)}" height="34" rx="8" fill="${C.badge}"/>`;
+  b += trend(dir, bx + 15, fy + 10, 13, C.yellow);
+  b += T(fonts.monoB, pct, { size: 14, x: bx + 36, y: fy + 17 + 5, fill: C.yellow, ls: 0.5 });
+  b += T(fonts.monoB, `TOTAL ${curSum}  ·  PERIODE 7 HARI TERAKHIR`, { size: 12.5, x: bx + bw - 2, y: fy + 21, anchor: 'end', fill: C.gray, ls: 1.2 });
+  const ch = fy + 34 + 26 - cy;
+  const body = card(cx, cy, cw, ch, { r: 20, sh: 8, sw: 4 }) + b;
+  return svgDoc(W, cy + ch + 30, {
+    title: 'Grafik kontribusi 7 hari',
+    desc: `Kontribusi harian: ${cur7.map((d) => `${dmy(d.date)} ${d.count}`).join(', ')}. Total ${curSum} dibanding ${prev} pada 7 hari sebelumnya.`,
+    body,
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   6) LANGUAGES
+   ════════════════════════════════════════════════════════════════════════ */
+function languagesSVG(cfg, data) {
+  const W = 800, cx = 24, cy = 24, cw = 744;
+  const hdr = cardHeader(cx, cy, cw, { colorKey: 'purple', ik: 'code', title: 'BAHASA TERATAS', sub: 'Berdasarkan ukuran kode di repositori publik' });
+  let b = hdr.svg;
+  const palette = ['yellow', 'blue', 'green', 'pink', 'purple', 'cyan'];
+  let list = [];
+  if (data && data.langs.length) {
+    const total = data.langs.reduce((a, l) => a + l[1], 0);
+    const top = data.langs.slice(0, 5).map(([n, s]) => ({ name: n, pct: (s / total) * 100 }));
+    const rest = data.langs.slice(5).reduce((a, l) => a + l[1], 0);
+    list = top;
+    if (rest > 0) list.push({ name: 'Lainnya', pct: (rest / total) * 100 });
+  }
+  const bx = cx + 28, by = hdr.next + 4, bw = cw - 56, bh = 38;
+  let ch;
+  if (!list.length) {
+    b += `<rect x="${bx}" y="${by}" width="${bw}" height="90" rx="14" fill="${C.chart}" stroke="${C.ink}" stroke-width="3"/>`;
+    b += T(fonts.monoB, 'DATA BAHASA BELUM TERSEDIA', { size: 15, x: bx + bw / 2, y: by + 51, anchor: 'middle', fill: C.gray, ls: 1.5 });
+    ch = by + 90 + 28 - cy;
+  } else {
+    const id = nid('lc');
+    b += `<clipPath id="${id}"><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="11"/></clipPath><g clip-path="url(#${id})">`;
+    let x = bx;
+    const totalPct = list.reduce((a, l) => a + l.pct, 0);
+    list.forEach((l, i) => {
+      const w = (l.pct / totalPct) * bw;
+      b += `<rect x="${f1(x)}" y="${by}" width="${f1(w)}" height="${bh}" fill="${C[palette[i]]}"/>`;
+      if (i > 0) b += `<rect x="${f1(x - 1.5)}" y="${by}" width="3" height="${bh}" fill="${C.ink}"/>`;
+      x += w;
+    });
+    b += `</g><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="11" fill="none" stroke="${C.ink}" stroke-width="3.5"/>`;
+    const colW = bw / 2, rowH = 44, ly = by + bh + 34;
+    list.forEach((l, i) => {
+      const col = i % 2, row = Math.floor(i / 2);
+      const x2 = bx + col * colW + (col ? 14 : 0), y2 = ly + row * rowH;
+      b += `<rect x="${x2 + 2.5}" y="${y2 + 2.5}" width="20" height="20" rx="5" fill="${C.ink}"/><rect x="${x2}" y="${y2}" width="20" height="20" rx="5" fill="${C[palette[i]]}" stroke="${C.ink}" stroke-width="2.5"/>`;
+      b += T(fonts.monoB, l.name.toUpperCase(), { size: 15, x: x2 + 34, y: y2 + 15.5, maxW: colW - 34 - 110, ls: 0.6 });
+      b += T(fonts.monoB, `${l.pct.toFixed(1)}%`, { size: 15, x: x2 + colW - 28 - (col ? 14 : 0), y: y2 + 15.5, anchor: 'end', fill: C.gray });
+    });
+    ch = ly + Math.ceil(list.length / 2) * rowH + 8 - cy;
+  }
+  const body = card(cx, cy, cw, ch, { r: 20, sh: 8, sw: 4 }) + b;
+  return svgDoc(W, cy + ch + 30, { title: 'Bahasa pemrograman teratas', desc: list.length ? list.map((l) => `${l.name} ${l.pct.toFixed(1)}%`).join(', ') : 'Data bahasa belum tersedia.', body });
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   7) SNAKE (membungkus output Platane/snk dalam kartu bertema)
+   ════════════════════════════════════════════════════════════════════════ */
+function demoSnake() {
+  const rnd = mulberry32(3);
+  const lv = ['#E4E0D2', '#FFE98A', '#FFD600', '#F2A900', '#111111'];
+  let r = '';
+  for (let w = 0; w < 53; w++) for (let d = 0; d < 7; d++) {
+    const l = rnd() < 0.45 ? 0 : Math.ceil(rnd() * 4);
+    r += `<rect x="${w * 16}" y="${d * 16}" width="12" height="12" rx="2" fill="${lv[l]}"/>`;
+  }
+  r += `<rect x="0" y="0" width="12" height="12" rx="4" fill="#3B66E6"><animate attributeName="x" values="0;832" dur="10s" repeatCount="indefinite"/></rect>`;
+  return `<svg viewBox="-16 -32 880 192" width="880" height="192" xmlns="http://www.w3.org/2000/svg">${r}</svg>`;
+}
+
+function snakeSVG(cfg, snakeRaw) {
+  const W = 800, cx = 24, cy = 24, cw = 744;
+  const hdr = cardHeader(cx, cy, cw, { colorKey: 'green', ik: 'grid', title: 'CONTRIBUTION SNAKE', sub: 'Ular melahap grafik kontribusi GitHub' });
+  let b = hdr.svg;
+  const bx = cx + 28, by = hdr.next + 2, bw = cw - 56;
+  let inner = null, vb = null;
+  if (snakeRaw) {
+    const m = snakeRaw.match(/<svg[^>]*\sviewBox="([^"]+)"[^>]*>([\s\S]*)<\/svg>\s*$/);
+    if (m) {
+      vb = m[1].trim().split(/[\s,]+/).map(Number);
+      // kartu selalu krem: buang override dark-mode bawaan snk supaya palet tetap sesuai tema
+      inner = m[2].replace(/@media\s*\(\s*prefers-color-scheme\s*:\s*dark\s*\)\s*\{(?:[^{}]|\{[^{}]*\})*\}/g, '');
+    }
+  }
+  let bh;
+  b += `<rect x="${bx}" y="${by}" width="${bw}" height="1" fill="none"/>`;
+  if (inner && vb.length === 4 && vb.every(Number.isFinite)) {
+    const pad = 14;
+    const iw = bw - pad * 2;
+    const ih = (iw * vb[3]) / vb[2];
+    bh = ih + pad * 2;
+    b += `<rect x="${bx}" y="${by}" width="${bw}" height="${f1(bh)}" rx="14" fill="${C.chart}"/>`;
+    b += `<svg x="${bx + pad}" y="${f1(by + pad)}" width="${f1(iw)}" height="${f1(ih)}" viewBox="${vb.join(' ')}" overflow="hidden">${inner}</svg>`;
+  } else {
+    bh = 120;
+    b += `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="14" fill="${C.chart}"/>`;
+    b += T(fonts.monoB, 'SNAKE BELUM TERSEDIA — JALANKAN WORKFLOW', { size: 14, x: bx + bw / 2, y: by + 66, anchor: 'middle', fill: C.gray, ls: 1.2 });
+  }
+  b += `<rect x="${bx}" y="${by}" width="${bw}" height="${f1(bh)}" rx="14" fill="none" stroke="${C.ink}" stroke-width="3.5"/>`;
+  const ch = by + bh + 28 - cy;
+  const body = card(cx, cy, cw, ch, { r: 20, sh: 8, sw: 4 }) + b;
+  return svgDoc(W, cy + ch + 30, { title: 'Contribution snake', desc: 'Animasi ular memakan grafik kontribusi GitHub.', body });
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   8) KONTAK
+   ════════════════════════════════════════════════════════════════════════ */
+function contactSVG(c) {
+  const W = 270, H = 182, x = 14, y = 14, w = 234, h = 146;
+  let b = card(x, y, w, h, { bar: C[c.color], barH: 10, r: 16 });
+  b += tile(x + 18, y + 18, 54, c.color, { bk: c.brand, k: 0.56 });
+  b += `<g class="nudge"><rect x="${x + w - 18 - 40 + 3}" y="${y + 18 + 3}" width="40" height="40" rx="10" fill="${C.yellow}"/><rect x="${x + w - 18 - 40}" y="${y + 18}" width="40" height="40" rx="10" fill="${C.ink}"/>${icon('arrow', x + w - 18 - 40 + 9, y + 27, 22, C.yellow, 2.6)}</g>`;
+  b += T(fonts.grot, c.name.toUpperCase(), { size: 24, x: x + 20, y: y + 102, maxW: w - 40 });
+  b += T(fonts.mono, c.handle, { size: 13.5, x: x + 20, y: y + 121, fill: C.gray, maxW: w - 40 });
+  return svgDoc(W, H, { title: `${c.name} ${c.handle}`, desc: `Kontak ${c.name}: ${c.handle}`, body: b });
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   9) FOOTER (ticker berjalan)
+   ════════════════════════════════════════════════════════════════════════ */
+function footerSVG(cfg) {
+  const W = 800, x0 = 24, cw = 744, y0 = 18, h = 48;
+  const size = 15, ls = 2.4;
+  let seqW = 0, seq = '';
+  cfg.ticker.forEach((t, i) => {
+    seq += T(fonts.monoB, t, { size, x: seqW, y: y0 + h / 2 + 5.2, fill: C.yellow, ls });
+    seqW += W_(fonts.monoB, t, size, ls) + 26;
+    seq += `<rect x="${f1(seqW - 3)}" y="${y0 + h / 2 - 5}" width="10" height="10" fill="${i % 2 ? C.cream : C.blue}" transform="rotate(45 ${f1(seqW + 2)} ${y0 + h / 2})"/>`;
+    seqW += 26;
+  });
+  const copies = Math.ceil(cw / seqW) + 1;
+  let track = '';
+  for (let i = 0; i < copies; i++) track += `<g transform="translate(${f1(i * seqW)} 0)">${seq}</g>`;
+  const dur = (seqW / 55).toFixed(1);
+  const id = nid('tk');
+  let b = `<rect x="${x0 + 5}" y="${y0 + 5}" width="${cw}" height="${h}" rx="12" fill="${C.yellow}"/>`;
+  b += `<clipPath id="${id}"><rect x="${x0}" y="${y0}" width="${cw}" height="${h}" rx="12"/></clipPath>`;
+  b += `<rect x="${x0}" y="${y0}" width="${cw}" height="${h}" rx="12" fill="${C.ink}"/>`;
+  b += `<g clip-path="url(#${id})"><g transform="translate(${x0 + 10} 0)"><g class="tick">${track}</g></g></g>`;
+  const d = NOW;
+  const stamp = `${d.getUTCDate()} ${BULAN[d.getUTCMonth()]} ${d.getUTCFullYear()}  ·  ${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')} UTC`;
+  b += `<circle class="pulse" cx="${W / 2 - W_(fonts.monoB, 'DIPERBARUI OTOMATIS  ' + stamp, 11, 1.2) / 2 - 12}" cy="${y0 + h + 28}" r="3.6" fill="${C.green}"/>`;
+  b += T(fonts.monoB, 'DIPERBARUI OTOMATIS  ' + stamp, { size: 11, x: W / 2, y: y0 + h + 32, anchor: 'middle', fill: C.gray, ls: 1.2 });
+  const H = y0 + h + 52;
+  return svgDoc(W, H, {
+    title: 'Footer profil', desc: `${cfg.ticker.join(', ')}. Diperbarui otomatis ${stamp}.`, body: b,
+    css: `.tick{animation:tick ${dur}s linear infinite}@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-${f1(seqW)}px)}}`,
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   MAIN
+   ════════════════════════════════════════════════════════════════════════ */
+async function main() {
+  let data = null;
+  if (DEMO) data = demoData();
+  else {
+    const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
+    if (!token) console.log('::warning::GH_TOKEN tidak ada — kartu statistik dibuat tanpa data.');
+    else {
+      try { data = await fetchData(CONFIG.username, token); }
+      catch (e) { console.log(`::warning::Gagal mengambil data GitHub: ${e.message}`); }
+    }
+  }
+
+  fs.mkdirSync(OUT, { recursive: true });
+  const snakePath = arg('--snake', path.join(OUT, 'github-snake.svg'));
+  let snakeRaw = null;
+  if (fs.existsSync(snakePath)) snakeRaw = fs.readFileSync(snakePath, 'utf8');
+  else if (DEMO) snakeRaw = demoSnake();
+
+  const files = {
+    'banner.svg': bannerSVG(CONFIG),
+    'about.svg': aboutSVG(CONFIG),
+    'stack.svg': stackSVG(CONFIG),
+    'stats.svg': statsSVG(CONFIG, data),
+    'activity.svg': activitySVG(CONFIG, data),
+    'languages.svg': languagesSVG(CONFIG, data),
+    'snake-card.svg': snakeSVG(CONFIG, snakeRaw),
+    'footer.svg': footerSVG(CONFIG),
+  };
+  for (const c of CONFIG.contacts) files[c.file] = contactSVG(c);
+
+  for (const [name, svg] of Object.entries(files)) {
+    fs.writeFileSync(path.join(OUT, name), svg);
+    console.log(`  ${name.padEnd(24)} ${(Buffer.byteLength(svg) / 1024).toFixed(1)} KB`);
+  }
+  console.log(`Selesai → ${OUT}/ ${DEMO ? '(data demo)' : data ? '(data asli)' : '(tanpa data)'}`);
+}
+
+main().catch((e) => { console.error(e); process.exit(1); });
