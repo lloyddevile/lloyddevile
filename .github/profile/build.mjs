@@ -28,7 +28,7 @@ const CONFIG = {
   status: 'ONLINE',
 
   // Teks yang diketik di terminal banner
-  typing: ['Hello World!', 'Digital Store Owner', 'Telegram Bot Developer', 'Front-end & Automation'],
+  typing: ['Hello World!', 'Digital Store Owner', 'Telegram & Whatsapp Bot Developer', 'Front-end & Automation'],
 
   // Chip di bawah nama: [label, warna]
   roles: [
