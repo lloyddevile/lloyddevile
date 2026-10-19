@@ -2,8 +2,8 @@
 /**
  * build.mjs — pembuat aset profil GitHub bertema neo-brutalism.
  *
- * Menghasilkan SVG (banner, about, stack, stats, activity, languages, snake,
- * kontak, footer) ke folder --out (default: dist). Semua teks diubah jadi path
+ * Menghasilkan SVG (banner, story, about, stack, games, stats, activity,
+ * languages, snake, kontak, cta, footer) ke folder --out (default: dist). Semua teks diubah jadi path
  * supaya font Space Mono / Space Grotesk tampil sama di semua perangkat.
  *
  * Pakai:
@@ -37,18 +37,32 @@ const CONFIG = {
     ['FRONT-END', 'green'],
   ],
 
-  // Kartu "Tentang Saya" (icon: store, bot, code, sprout, server, gamepad). Jumlah kartu bebas, 2 per baris.
-  about: [
-    { icon: 'store', color: 'yellow', chip: 'TOKO DIGITAL', title: 'Lloyd Market', text: 'Toko langganan aplikasi premium' },
-    { icon: 'bot', color: 'blue', chip: 'AUTOMASI', title: 'Bot Developer', text: 'Telegram, WhatsApp & Discord' },
-    { icon: 'code', color: 'green', chip: 'FRONT-END', title: 'React + Vite', text: 'Web tools & situs front-end' },
-    { icon: 'server', color: 'pink', chip: 'BACK-END', title: 'Back-end', text: 'PHP, Python, Node.js & Laragon' },
-    { icon: 'gamepad', color: 'purple', chip: 'GAME DEV', title: 'Roblox & Minecraft', text: 'Map developer & setup server' },
-    { icon: 'sprout', color: 'orange', chip: 'MAHASISWA', title: 'Semester 5', text: 'Mahasiswa aktif & terus belajar' },
-  ],
-  cta: 'Tanya saya soal bot, back-end, web tools, dan produk digital',
+  // 01 — Cerita. Urutan bab = urutan timeline. Warna: yellow, blue, green, purple, cyan, pink, orange.
+  story: {
+    lead: 'Saya suka membuat hal yang benar-benar jalan: dari server game, bot otomatis, sampai toko digital.',
+    chapters: [
+      { color: 'purple', title: 'Dari bermain ke membuat', text: 'Berawal dari game. Saya mulai membuat map Roblox dengan Lua dan men-setup server Minecraft.' },
+      { color: 'pink', title: 'Belajar membangun sistem', text: 'Saya mendalami back-end dengan PHP, Python, dan Node.js, memakai Laragon sebagai lingkungan kerja lokal.' },
+      { color: 'blue', title: 'Mengotomasi pekerjaan', text: 'Saya membuat bot untuk Telegram, WhatsApp, dan Discord, termasuk bot Telegram auto-order berbasis Node.js.' },
+      { color: 'yellow', title: 'Lloyd Market', text: 'Toko langganan aplikasi premium yang saya bangun dan kelola sebagai Digital Store Owner.' },
+    ],
+    now: 'Sekarang: memperdalam front-end dengan React + Vite dan otomasi, sambil kuliah di semester 5.',
+  },
 
-  // Tech stack. Kunci ikon: lihat STACK_STYLE. Grup dengan half:true yang berurutan tampil berdampingan (maks 3 item),
+  // 02 — Yang saya kerjakan (icon: store, bot, code, sprout, server, gamepad). 2 kartu per baris.
+  about: [
+    { icon: 'store', color: 'yellow', chip: 'PRODUK DIGITAL', title: 'Lloyd Market', text: 'Toko langganan aplikasi premium yang saya bangun dan kelola.' },
+    { icon: 'bot', color: 'blue', chip: 'OTOMASI', title: 'Bot Developer', text: 'Bot Telegram, WhatsApp, dan Discord, termasuk bot auto-order dengan Node.js.' },
+    { icon: 'server', color: 'pink', chip: 'BACK-END', title: 'Back-end & Sistem', text: 'PHP, Python, dan Node.js, dengan Laragon sebagai lingkungan kerja lokal.' },
+    { icon: 'code', color: 'green', chip: 'FRONT-END', title: 'Web & Front-end', text: 'Web tools dan situs dengan React + Vite, sambil terus memperdalam front-end.' },
+    { icon: 'gamepad', color: 'purple', chip: 'GAME DEV', title: 'Roblox & Minecraft', text: 'Membuat map Roblox dengan Lua dan men-setup server Minecraft.' },
+    { icon: 'sprout', color: 'orange', chip: 'AKADEMIK', title: 'Mahasiswa Semester 5', text: 'Mahasiswa aktif yang terus belajar sambil membangun berbagai proyek.' },
+  ],
+
+  // Tombol ajakan (cta.svg, dibungkus tautan Telegram di README)
+  cta: { title: 'Punya ide bot, otomasi, atau web?', sub: 'Ceritakan langsung ke saya di Telegram.', button: 'CHAT SAYA' },
+
+  // 03 — Tech stack. Kunci ikon: lihat STACK_STYLE. Grup dengan half:true yang berurutan tampil berdampingan (maks 3 item),
   // grup lainnya selebar penuh (maks 7 item).
   stack: [
     { label: 'BAHASA PEMROGRAMAN', color: 'yellow', items: [['php', 'PHP'], ['python', 'Python'], ['lua', 'Lua'], ['js', 'JavaScript'], ['ts', 'TypeScript']] },
@@ -59,8 +73,13 @@ const CONFIG = {
     { label: 'TOOLS & DEPLOY', color: 'blue', half: true, items: [['git', 'Git'], ['github', 'GitHub'], ['vercel', 'Vercel']] },
   ],
 
-  // Game yang dimainkan (kartu "GAME FAVORIT")
-  games: ['Minecraft', 'Mobile Legends', 'PUBG', 'Valorant'],
+  // 05 — Game favorit. bk = ikon brand dari simple-icons, ik = ikon gambar sendiri (lihat ICONS).
+  games: [
+    { name: 'Minecraft', genre: 'SANDBOX', note: 'Termasuk setup servernya', color: 'green', ik: 'minecraft' },
+    { name: 'Mobile Legends', genre: 'MOBA', note: 'Tim 5 lawan 5', color: 'blue', ik: 'mlbb' },
+    { name: 'PUBG', genre: 'BATTLE ROYALE', note: 'Bertahan sampai akhir', color: 'orange', bk: 'siPubg' },
+    { name: 'Valorant', genre: 'FPS TAKTIS', note: 'Tim 5 lawan 5', color: 'pink', bk: 'siValorant' },
+  ],
 
   // Kartu kontak (URL ada di README.md)
   contacts: [
@@ -107,6 +126,7 @@ const fonts = {
   mono: loadFont('@fontsource/space-mono', 'space-mono-latin-400-normal.woff'),
   monoB: loadFont('@fontsource/space-mono', 'space-mono-latin-700-normal.woff'),
   grot: loadFont('@fontsource/space-grotesk', 'space-grotesk-latin-700-normal.woff'),
+  grotM: loadFont('@fontsource/space-grotesk', 'space-grotesk-latin-500-normal.woff'), // teks paragraf
 };
 const CAP = 0.7; // tinggi huruf kapital relatif ke ukuran font
 
@@ -164,6 +184,23 @@ function T(font, str, { size = 14, x = 0, y = 0, anchor = 'start', fill = C.ink,
   return `<path d="${d}" fill="${fill}"/>`;
 }
 
+/** Pecah teks jadi baris-baris yang tidak melebihi maxW (greedy, per kata). */
+function wrap(font, str, size, maxW, ls = 0) {
+  const lines = [];
+  let cur = '';
+  for (const w of str.split(/\s+/).filter(Boolean)) {
+    const t = cur ? `${cur} ${w}` : w;
+    if (cur && W_(font, t, size, ls) > maxW) { lines.push(cur); cur = w; } else cur = t;
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+/** Paragraf: tiap baris jadi <path>. y = baseline baris pertama. */
+function para(font, str, { x, y, size, maxW, lh = Math.round(size * 1.45), fill = C.ink, ls = 0 }) {
+  const lines = wrap(font, str, size, maxW, ls);
+  return { svg: lines.map((l, i) => T(font, l, { size, x, y: y + i * lh, fill, ls })).join(''), lines: lines.length, lh };
+}
+
 /* ════════════════════════════════════════════════════════════════════════
    IKON
    ════════════════════════════════════════════════════════════════════════ */
@@ -184,6 +221,8 @@ const ICONS = {
   arrow: '<path d="M7 17 17 7M8.5 7H17v8.5"/>',
   server: '<rect x="4" y="4" width="16" height="6.5" rx="2"/><rect x="4" y="13.5" width="16" height="6.5" rx="2"/><circle cx="8" cy="7.25" r=".7" fill="$C"/><circle cx="8" cy="16.75" r=".7" fill="$C"/><path d="M12.5 7.25H16M12.5 16.75H16"/>',
   gamepad: '<rect x="3" y="7.5" width="18" height="10" rx="4.5"/><path d="M8 10.5v4M6 12.5h4"/><circle cx="15.2" cy="11.6" r=".9" fill="$C"/><circle cx="17.6" cy="13.6" r=".9" fill="$C"/>',
+  minecraft: '<path d="M12 3.2 19.6 7.6v8.8L12 20.8l-7.6-4.4V7.6L12 3.2Z"/><path d="M4.4 7.6 12 12l7.6-4.4M12 12v8.8"/><path d="M12 5.9l2.7 1.55L12 9 9.3 7.45 12 5.9Z" fill="$C" stroke="none"/><path d="M6.3 12.2l1.9 1.1v2.3l-1.9-1.1v-2.3ZM17.7 12.2l-1.9 1.1v2.3l1.9-1.1v-2.3Z" fill="$C" stroke="none"/>',
+  mlbb: '<path d="M12 2.8 19.4 5.7v6.2c0 4.3-2.9 7.4-7.4 9.3-4.5-1.9-7.4-5-7.4-9.3V5.7L12 2.8Z"/><path d="M8.4 8.2l7.2 7.2M15.6 8.2l-7.2 7.2"/><path d="M7.2 9.6l1.9-1.9M16.8 9.6l-1.9-1.9" />',
   grid: '<rect x="4" y="4" width="6" height="6" rx="1.2"/><rect x="14" y="4" width="6" height="6" rx="1.2" fill="$C"/><rect x="4" y="14" width="6" height="6" rx="1.2" fill="$C"/><rect x="14" y="14" width="6" height="6" rx="1.2"/>',
 };
 
@@ -392,6 +431,7 @@ function bannerSVG(cfg) {
   b += `<rect x="${ax + 4}" y="${ay + 4}" width="76" height="76" rx="14" fill="${C.yellow}"/>`;
   b += `<rect x="${ax}" y="${ay}" width="76" height="76" rx="14" fill="${C.ink}"/>`;
   b += T(fonts.grot, cfg.name[0].toUpperCase(), { size: 50, x: ax + 38, y: ay + 38 + CAP * 25, anchor: 'middle', fill: C.cream });
+  b += `<rect x="${ax + 76 - 15}" y="${ay - 5}" width="14" height="14" rx="3" fill="${C.yellow}" stroke="${C.ink}" stroke-width="3"/>`; // aksen piksel
   const nameSize = 68, nameStr = cfg.name.toUpperCase();
   const nx = ax + 76 + 26, nBase = ay + 38 + (CAP * nameSize) / 2 - 2;
   const nW = W_(fonts.grot, nameStr, nameSize);
@@ -441,29 +481,104 @@ function bannerSVG(cfg) {
    2) ABOUT
    ════════════════════════════════════════════════════════════════════════ */
 function aboutSVG(cfg) {
-  const W = 800, x0 = 24, cw = 746, gap = 22, cardW = (cw - gap) / 2, cardH = 156;
-  let b = sectionTab(x0, 22, 'TENTANG SAYA', cw);
+  const W = 800, x0 = 24, cw = 744, gap = 22, cardW = (cw - gap) / 2;
+  const tw = cardW - 44, bs = 16.5, lh = 23;
+  const wrapped = cfg.about.map((a) => wrap(fonts.grotM, a.text, bs, tw));
+  const maxLines = Math.max(...wrapped.map((l) => l.length));
+  const cardH = 132 + (maxLines - 1) * lh + 36;
+  let b = sectionTab(x0, 22, '02 / YANG SAYA KERJAKAN', cw);
   cfg.about.forEach((a, i) => {
     const x = x0 + (i % 2) * (cardW + gap);
     const y = 76 + Math.floor(i / 2) * (cardH + gap);
     let g = card(x, y, cardW, cardH, { bar: C[a.color], barH: 10 });
     g += tile(x + 20, y + 20, 54, a.color, { ik: a.icon, k: 0.54 });
     g += chip(a.chip, x + cardW - 20, y + 24, { h: 30, size: 12, anchor: 'end', ls: 1, padX: 11 }).svg;
-    g += T(fonts.grot, a.title.toUpperCase(), { size: 27, x: x + 22, y: y + 108, maxW: cardW - 44 });
-    g += T(fonts.mono, a.text.toUpperCase(), { size: 13.5, x: x + 22, y: y + 132, fill: C.gray, ls: 0.8, maxW: cardW - 44 });
+    g += T(fonts.grot, a.title, { size: 26, x: x + 22, y: y + 106, maxW: cardW - 44 });
+    g += para(fonts.grotM, a.text, { x: x + 22, y: y + 134, size: bs, maxW: tw, lh, fill: C.gray }).svg;
     b += `<g class="rise" style="animation-delay:${(i * 0.09).toFixed(2)}s">${g}</g>`;
   });
-  // CTA
   const rows = Math.ceil(cfg.about.length / 2);
-  const cy = 76 + rows * (cardH + gap) + 2, cH = 76;
-  b += `<g class="rise" style="animation-delay:.4s">${card(x0, cy, cw, cH, { fill: C.yellow, r: 18 })}`;
-  b += `<circle cx="${x0 + 52}" cy="${cy + cH / 2}" r="25" fill="${C.ink}"/>`;
-  b += icon('chat', x0 + 52 - 14, cy + cH / 2 - 14, 28, C.yellow, 2.2);
-  b += T(fonts.grot, cfg.cta, { size: 22, x: x0 + 96, y: cy + cH / 2 + 8, maxW: cw - 96 - 150 });
-  b += chip('CHAT SAYA', x0 + cw - 24, cy + cH / 2 - 17, { h: 34, size: 12.5, fill: C.paper, anchor: 'end', padX: 14 }).svg;
-  b += '</g>';
-  const H = cy + cH + 6 + 24;
-  return svgDoc(W, H, { title: 'Tentang saya', desc: cfg.about.map((a) => `${a.title}: ${a.text}`).join('. ') + `. ${cfg.cta}.`, body: b });
+  const H = 76 + rows * (cardH + gap) - gap + 8 + 26;
+  return svgDoc(W, H, { title: 'Yang saya kerjakan', desc: cfg.about.map((a) => `${a.title}: ${a.text}`).join(' '), body: b });
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   2b) STORY (timeline cerita)
+   ════════════════════════════════════════════════════════════════════════ */
+function storySVG(cfg) {
+  const st = cfg.story, W = 800, x0 = 24, cw = 744, padX = 30, top = 76;
+  const inner = cw - padX * 2;
+  let b = sectionTab(x0, 22, '01 / CERITA SAYA', cw);
+  let g = '';
+  let y = top + 34;
+
+  // kalimat pembuka
+  const lead = para(fonts.grot, st.lead, { x: x0 + padX, y: y + 20, size: 25, maxW: inner, lh: 33 });
+  g += lead.svg;
+  y += 20 + (lead.lines - 1) * 33 + 26;
+  g += `<rect x="${x0 + padX}" y="${y}" width="${inner}" height="3" fill="${C.ink}"/>`;
+  y += 3 + 30;
+
+  // timeline
+  const nodeS = 46, textX = x0 + padX + nodeS + 22, textW = inner - nodeS - 22, bs = 16.5, lh = 24;
+  const nodes = [];
+  const chapters = st.chapters.map((c, i) => {
+    const body = para(fonts.grotM, c.text, { x: textX, y: y + 50, size: bs, maxW: textW, lh, fill: C.gray });
+    const hgt = Math.max(nodeS, 50 + (body.lines - 1) * lh + 8);
+    const top0 = y;
+    let s = '';
+    const nx = x0 + padX, col = c.color;
+    s += `<rect x="${nx + 3.5}" y="${top0 + 3.5}" width="${nodeS}" height="${nodeS}" rx="12" fill="${C.ink}"/>`;
+    s += `<rect x="${nx}" y="${top0}" width="${nodeS}" height="${nodeS}" rx="12" fill="${C[col]}" stroke="${C.ink}" stroke-width="3"/>`;
+    s += T(fonts.monoB, String(i + 1).padStart(2, '0'), { size: 17, x: nx + nodeS / 2, y: top0 + nodeS / 2 + (CAP * 17) / 2, anchor: 'middle', fill: ICOLOR[col] });
+    s += T(fonts.grot, c.title, { size: 21, x: textX, y: top0 + 22, maxW: textW });
+    s += body.svg;
+    nodes.push(top0 + nodeS / 2);
+    y += hgt + 26;
+    return `<g class="rise" style="animation-delay:${(0.12 + i * 0.1).toFixed(2)}s">${s}</g>`;
+  });
+  // garis penghubung di belakang node
+  const lx = x0 + padX + nodeS / 2;
+  g += `<rect x="${lx - 1.5}" y="${f1(nodes[0])}" width="3" height="${f1(nodes[nodes.length - 1] - nodes[0])}" fill="${C.ink}"/>`;
+  g += chapters.join('');
+
+  // strip "sekarang"
+  const now = para(fonts.grotM, st.now, { x: x0 + padX + 50, y: 0, size: 17, maxW: inner - 50 - 24, lh: 25, fill: C.yellow });
+  const nowH = 38 + (now.lines - 1) * 25;
+  y -= 6;
+  g += `<rect x="${x0 + padX + 4}" y="${y + 4}" width="${inner}" height="${nowH}" rx="12" fill="${C.yellow}"/>`;
+  g += `<rect x="${x0 + padX}" y="${y}" width="${inner}" height="${nowH}" rx="12" fill="${C.ink}"/>`;
+  g += T(fonts.monoB, '>', { size: 22, x: x0 + padX + 20, y: y + 19 + 8 + (now.lines > 1 ? 0 : 0), fill: C.green });
+  g += para(fonts.grotM, st.now, { x: x0 + padX + 50, y: y + 19 + 6, size: 17, maxW: inner - 50 - 24, lh: 25, fill: C.yellow }).svg;
+  y += nowH + 30;
+
+  const ch = y - top;
+  b = card(x0, top, cw, ch, { r: 20, sh: 8, sw: 4 }) + g + b;
+  return svgDoc(W, top + ch + 30, {
+    title: 'Cerita saya',
+    desc: `${st.lead} ${st.chapters.map((c) => `${c.title}. ${c.text}`).join(' ')} ${st.now}`,
+    body: b,
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   2c) CTA + HEAD (judul seksi berdiri sendiri)
+   ════════════════════════════════════════════════════════════════════════ */
+function ctaSVG(cfg) {
+  const W = 800, x0 = 24, cw = 744, y0 = 22, h = 104, k = cfg.cta;
+  let b = card(x0, y0, cw, h, { fill: C.yellow, r: 18, sh: 7, sw: 4 });
+  b += `<circle cx="${x0 + 58}" cy="${y0 + h / 2}" r="27" fill="${C.ink}"/>`;
+  b += icon('chat', x0 + 58 - 15, y0 + h / 2 - 15, 30, C.yellow, 2.2);
+  const btn = chip(k.button, x0 + cw - 26, y0 + h / 2 - 20, { h: 40, size: 13.5, fill: C.paper, anchor: 'end', padX: 18 });
+  b += `<g class="nudge">${btn.svg}</g>`;
+  const tx = x0 + 106, maxW = btn.x - 18 - tx;
+  b += T(fonts.grot, k.title, { size: 25, x: tx, y: y0 + h / 2 - 3, maxW });
+  b += T(fonts.grotM, k.sub, { size: 17, x: tx, y: y0 + h / 2 + 24, maxW });
+  return svgDoc(W, y0 + h + 8 + 26, { title: k.title, desc: `${k.title} ${k.sub}`, body: b });
+}
+
+function headSVG(label) {
+  return svgDoc(800, 22 + 32 + 14, { title: label, desc: label, body: sectionTab(24, 22, label, 744) });
 }
 
 /* ════════════════════════════════════════════════════════════════════════
@@ -476,15 +591,16 @@ const STACK_STYLE = {
   php: { brand: 'siPhp', color: 'purple' }, python: { brand: 'siPython', color: 'blue' }, lua: { brand: 'siLua', color: 'ink' },
   ts: { brand: 'siTypescript', color: 'blue' },
   discord: { brand: 'siDiscord', color: 'purple' }, telegram: { brand: 'siTelegram', color: 'blue' }, whatsapp: { brand: 'siWhatsapp', color: 'green' },
-  roblox: { brand: 'siRoblox', color: 'pink' }, minecraft: { brand: 'siMinecraft', color: 'green' },
-  // Laragon tidak ada di simple-icons → pakai ikon gambar sendiri (ik). Properti ik juga jadi cadangan bila brand tidak ditemukan.
-  laragon: { ik: 'server', color: 'orange' },
+  // simple-icons v16 sudah tidak memuat logo Minecraft → pakai ikon blok buatan sendiri (ik)
+  roblox: { brand: 'siRoblox', color: 'pink' }, minecraft: { ik: 'minecraft', color: 'green' },
+  // Properti ik jadi cadangan bila brand tidak ditemukan di simple-icons.
+  laragon: { brand: 'siLaragon', ik: 'server', color: 'orange' },
 };
 
 function stackSVG(cfg) {
-  const W = 800, cx = 24, cy = 24, cw = 744;
+  const W = 800, cx = 24, cy = 76, cw = 744;
   const groups = cfg.stack;
-  const hdr = cardHeader(cx, cy, cw, { colorKey: 'blue', ik: 'code', title: 'TECH STACK', sub: 'Teknologi yang saya gunakan sehari-hari' });
+  const hdr = { svg: sectionTab(cx, 22, '03 / TECH STACK', cw), next: cy + 28 };
   const gx = cx + 28, gw = cw - 56, gh = 176, gap = 20;
   const tS = 76;
   let idx = 0;
@@ -531,32 +647,31 @@ function stackSVG(cfg) {
    3b) GAMES
    ════════════════════════════════════════════════════════════════════════ */
 function gamesSVG(cfg) {
-  const W = 800, cx = 24, cy = 24, cw = 744;
-  const hdr = cardHeader(cx, cy, cw, { colorKey: 'purple', ik: 'gamepad', title: 'GAME FAVORIT', sub: 'Game yang saya mainkan' });
-  const colors = ['green', 'blue', 'yellow', 'pink', 'purple', 'cyan'];
-  const bx = cx + 28, right = cx + cw - 28, rowH = 52, chipH = 40;
-  let b = hdr.svg;
-  let x = bx, y = hdr.next;
-  cfg.games.forEach((name, i) => {
-    const col = colors[i % colors.length];
-    const probe = chip(name.toUpperCase(), 0, 0, { h: chipH, size: 15, ls: 1.4, padX: 18, fill: C[col], color: ICOLOR[col] });
-    if (x + probe.w > right) { x = bx; y += rowH; }
-    const c = chip(name.toUpperCase(), x, y, { h: chipH, size: 15, ls: 1.4, padX: 18, fill: C[col], color: ICOLOR[col], r: 10 });
-    b += `<g class="rise" style="animation-delay:${(i * 0.1).toFixed(2)}s">${c.svg}</g>`;
-    x += c.w + 18;
+  const W = 800, x0 = 24, cw = 744, gap = 22, cardW = (cw - gap) / 2, cardH = 124, top = 76;
+  let b = sectionTab(x0, 22, '05 / GAME FAVORIT', cw);
+  cfg.games.forEach((gm, i) => {
+    const x = x0 + (i % 2) * (cardW + gap);
+    const y = top + Math.floor(i / 2) * (cardH + gap);
+    const tx = x + 20 + 84 + 20, tw = cardW - (tx - x) - 18;
+    let g = card(x, y, cardW, cardH, { bar: C[gm.color], barH: 10 });
+    g += tile(x + 20, y + 18, 84, gm.color, { ik: gm.ik, bk: gm.bk, k: 0.58, r: 16, sh: 4.5 });
+    g += T(fonts.grot, gm.name, { size: 25, x: tx, y: y + 44, maxW: tw });
+    g += chip(gm.genre, tx, y + 56, { h: 26, size: 11, ls: 1, padX: 10, sh: 2.5, sw: 2.2, r: 7 }).svg;
+    g += T(fonts.grotM, gm.note, { size: 15.5, x: tx, y: y + 104, fill: C.gray, maxW: tw });
+    b += `<g class="rise" style="animation-delay:${(i * 0.1).toFixed(2)}s">${g}</g>`;
   });
-  const ch = y + chipH + 28 - cy;
-  const body = card(cx, cy, cw, ch, { r: 20, sh: 8, sw: 4 }) + b;
-  return svgDoc(W, cy + ch + 30, { title: 'Game favorit', desc: `Game yang saya mainkan: ${cfg.games.join(', ')}.`, body });
+  const rows = Math.ceil(cfg.games.length / 2);
+  const H = top + rows * (cardH + gap) - gap + 8 + 26;
+  return svgDoc(W, H, { title: 'Game favorit', desc: `Game favorit: ${cfg.games.map((g) => `${g.name} (${g.genre.toLowerCase()})`).join(', ')}.`, body: b });
 }
 
 /* ════════════════════════════════════════════════════════════════════════
    4) STATS
    ════════════════════════════════════════════════════════════════════════ */
 function statsSVG(cfg, data) {
-  const W = 800, x0 = 24, cw = 746, gap = 24;
+  const W = 800, x0 = 24, cw = 744, gap = 24;
   const v = (n) => (data ? fmtNum(n) : '—');
-  let b = sectionTab(x0, 22, 'STATISTIK GITHUB', cw);
+  let b = sectionTab(x0, 22, '06 / AKTIVITAS GITHUB', cw);
   const big = (x, y, w, h, o, delay) => {
     let s = card(x, y, w, h, { bar: C[o.color], barH: 10 });
     s += tile(x + 20, y + 20, 58, o.color, { ik: o.ik, k: 0.54 });
@@ -830,8 +945,12 @@ async function main() {
 
   const files = {
     'banner.svg': bannerSVG(CONFIG),
+    'story.svg': storySVG(CONFIG),
     'about.svg': aboutSVG(CONFIG),
     'stack.svg': stackSVG(CONFIG),
+    'faq-head.svg': headSVG('04 / TANYA SAYA'),
+    'cta.svg': ctaSVG(CONFIG),
+    'contact-head.svg': headSVG('HUBUNGI SAYA'),
     'games.svg': gamesSVG(CONFIG),
     'stats.svg': statsSVG(CONFIG, data),
     'activity.svg': activitySVG(CONFIG, data),
