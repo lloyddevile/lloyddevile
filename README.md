@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/lloyddevile/lloyddevile/output/banner.svg" alt="Fatiha — Lloyd Market, Bot Developer, Front-end. Hello World! Digital Store Owner. Telegram Bot Developer. Front-end dan Automation." width="100%" />
+<img src="https://raw.githubusercontent.com/lloyddevile/lloyddevile/output/banner.svg" alt="Fatiha — Lloyd Market, Bot Developer, Front-end. Hello World! Digital Store Owner. Telegram & Whatsapp Bot Developer. Front-end dan Automation." width="100%" />
 
 <img src="https://raw.githubusercontent.com/lloyddevile/lloyddevile/output/about.svg" alt="Tentang saya: membangun Lloyd Market (toko langganan aplikasi premium), mengembangkan bot Telegram auto-order dengan Node.js, membuat web tools dan situs front-end dengan React + Vite, sedang belajar front-end dan otomasi lebih dalam. Tanya saya soal bot, web tools, dan produk digital." width="100%" />
 
