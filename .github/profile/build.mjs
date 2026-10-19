@@ -28,7 +28,7 @@ const CONFIG = {
   status: 'ONLINE',
 
   // Teks yang diketik di terminal banner
-  typing: ['Hello World!', 'Digital Store Owner', 'Telegram & Whatsapp Bot Developer', 'Front-end & Automation'],
+  typing: ['Hello World!', 'Digital Store Owner', 'Discord, Telegram & WhatsApp Bots', 'Back-end & Automation', 'Front-end with React + Vite', 'Roblox Map Developer'],
 
   // Chip di bawah nama: [label, warna]
   roles: [
@@ -37,21 +37,30 @@ const CONFIG = {
     ['FRONT-END', 'green'],
   ],
 
-  // Kartu "Tentang Saya" (icon: store, bot, code, sprout)
+  // Kartu "Tentang Saya" (icon: store, bot, code, sprout, server, gamepad). Jumlah kartu bebas, 2 per baris.
   about: [
     { icon: 'store', color: 'yellow', chip: 'TOKO DIGITAL', title: 'Lloyd Market', text: 'Toko langganan aplikasi premium' },
-    { icon: 'bot', color: 'blue', chip: 'AUTOMASI', title: 'Bot Telegram', text: 'Auto-order dengan Node.js' },
+    { icon: 'bot', color: 'blue', chip: 'AUTOMASI', title: 'Bot Developer', text: 'Telegram, WhatsApp & Discord' },
     { icon: 'code', color: 'green', chip: 'FRONT-END', title: 'React + Vite', text: 'Web tools & situs front-end' },
-    { icon: 'sprout', color: 'purple', chip: 'SEDANG BELAJAR', title: 'Front-end & Otomasi', text: 'Mendalami lebih jauh' },
+    { icon: 'server', color: 'pink', chip: 'BACK-END', title: 'Back-end', text: 'PHP, Python, Node.js & Laragon' },
+    { icon: 'gamepad', color: 'purple', chip: 'GAME DEV', title: 'Roblox & Minecraft', text: 'Map developer & setup server' },
+    { icon: 'sprout', color: 'orange', chip: 'MAHASISWA', title: 'Semester 5', text: 'Mahasiswa aktif & terus belajar' },
   ],
-  cta: 'Tanya saya soal bot, web tools, dan produk digital',
+  cta: 'Tanya saya soal bot, back-end, web tools, dan produk digital',
 
-  // Tech stack. Kunci ikon: html css js react vite node git github vercel
+  // Tech stack. Kunci ikon: lihat STACK_STYLE. Grup dengan half:true yang berurutan tampil berdampingan (maks 3 item),
+  // grup lainnya selebar penuh (maks 7 item).
   stack: [
-    { label: 'FRONT-END', color: 'yellow', items: [['html', 'HTML'], ['css', 'CSS'], ['js', 'JavaScript'], ['react', 'React'], ['vite', 'Vite']] },
-    { label: 'BACKEND', color: 'green', items: [['node', 'Node.js']] },
-    { label: 'TOOLS & DEPLOY', color: 'blue', items: [['git', 'Git'], ['github', 'GitHub'], ['vercel', 'Vercel']] },
+    { label: 'BAHASA PEMROGRAMAN', color: 'yellow', items: [['php', 'PHP'], ['python', 'Python'], ['lua', 'Lua'], ['js', 'JavaScript'], ['ts', 'TypeScript']] },
+    { label: 'FRONT-END', color: 'cyan', items: [['html', 'HTML'], ['css', 'CSS'], ['react', 'React'], ['vite', 'Vite']] },
+    { label: 'BACK-END', color: 'green', half: true, items: [['node', 'Node.js'], ['laragon', 'Laragon']] },
+    { label: 'BOT & OTOMASI', color: 'pink', half: true, items: [['discord', 'Discord'], ['telegram', 'Telegram'], ['whatsapp', 'WhatsApp']] },
+    { label: 'GAME DEV', color: 'purple', half: true, items: [['roblox', 'Roblox'], ['minecraft', 'Minecraft']] },
+    { label: 'TOOLS & DEPLOY', color: 'blue', half: true, items: [['git', 'Git'], ['github', 'GitHub'], ['vercel', 'Vercel']] },
   ],
+
+  // Game yang dimainkan (kartu "GAME FAVORIT")
+  games: ['Minecraft', 'Mobile Legends', 'PUBG', 'Valorant'],
 
   // Kartu kontak (URL ada di README.md)
   contacts: [
@@ -61,7 +70,7 @@ const CONFIG = {
   ],
 
   // Teks berjalan di footer
-  ticker: ['LLOYD MARKET', 'BOT DEVELOPER', 'FRONT-END', 'NODE.JS', 'REACT + VITE', 'AUTOMASI'],
+  ticker: ['LLOYD MARKET', 'BOT DEVELOPER', 'BACK-END', 'FRONT-END', 'PHP', 'PYTHON', 'LUA', 'TYPESCRIPT', 'NODE.JS', 'REACT + VITE', 'ROBLOX', 'AUTOMASI'],
 };
 
 /* ════════════════════════════════════════════════════════════════════════
@@ -173,6 +182,8 @@ const ICONS = {
   pr: '<circle cx="6" cy="6" r="2.2"/><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="M6 8.2v7.6M18 15.8V10a3 3 0 0 0-3-3h-3m0 0 2-2m-2 2 2 2"/>',
   issue: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5"/><circle cx="12" cy="16.2" r=".7" fill="$C"/>',
   arrow: '<path d="M7 17 17 7M8.5 7H17v8.5"/>',
+  server: '<rect x="4" y="4" width="16" height="6.5" rx="2"/><rect x="4" y="13.5" width="16" height="6.5" rx="2"/><circle cx="8" cy="7.25" r=".7" fill="$C"/><circle cx="8" cy="16.75" r=".7" fill="$C"/><path d="M12.5 7.25H16M12.5 16.75H16"/>',
+  gamepad: '<rect x="3" y="7.5" width="18" height="10" rx="4.5"/><path d="M8 10.5v4M6 12.5h4"/><circle cx="15.2" cy="11.6" r=".9" fill="$C"/><circle cx="17.6" cy="13.6" r=".9" fill="$C"/>',
   grid: '<rect x="4" y="4" width="6" height="6" rx="1.2"/><rect x="14" y="4" width="6" height="6" rx="1.2" fill="$C"/><rect x="4" y="14" width="6" height="6" rx="1.2" fill="$C"/><rect x="14" y="14" width="6" height="6" rx="1.2"/>',
 };
 
@@ -443,7 +454,8 @@ function aboutSVG(cfg) {
     b += `<g class="rise" style="animation-delay:${(i * 0.09).toFixed(2)}s">${g}</g>`;
   });
   // CTA
-  const cy = 76 + 2 * (cardH + gap) + 2, cH = 76;
+  const rows = Math.ceil(cfg.about.length / 2);
+  const cy = 76 + rows * (cardH + gap) + 2, cH = 76;
   b += `<g class="rise" style="animation-delay:.4s">${card(x0, cy, cw, cH, { fill: C.yellow, r: 18 })}`;
   b += `<circle cx="${x0 + 52}" cy="${cy + cH / 2}" r="25" fill="${C.ink}"/>`;
   b += icon('chat', x0 + 52 - 14, cy + cH / 2 - 14, 28, C.yellow, 2.2);
@@ -461,6 +473,12 @@ const STACK_STYLE = {
   html: { brand: 'siHtml5', color: 'orange' }, css: { brand: 'siCss', color: 'blue' }, js: { brand: 'siJavascript', color: 'yellow' },
   react: { brand: 'siReact', color: 'cyan' }, vite: { brand: 'siVite', color: 'purple' }, node: { brand: 'siNodedotjs', color: 'green' },
   git: { brand: 'siGit', color: 'pink' }, github: { brand: 'siGithub', color: 'ink' }, vercel: { brand: 'siVercel', color: 'paper' },
+  php: { brand: 'siPhp', color: 'purple' }, python: { brand: 'siPython', color: 'blue' }, lua: { brand: 'siLua', color: 'ink' },
+  ts: { brand: 'siTypescript', color: 'blue' },
+  discord: { brand: 'siDiscord', color: 'purple' }, telegram: { brand: 'siTelegram', color: 'blue' }, whatsapp: { brand: 'siWhatsapp', color: 'green' },
+  roblox: { brand: 'siRoblox', color: 'pink' }, minecraft: { brand: 'siMinecraft', color: 'green' },
+  // Laragon tidak ada di simple-icons → pakai ikon gambar sendiri (ik). Properti ik juga jadi cadangan bila brand tidak ditemukan.
+  laragon: { ik: 'server', color: 'orange' },
 };
 
 function stackSVG(cfg) {
@@ -480,21 +498,56 @@ function stackSVG(cfg) {
     for (const [key, label] of g.items) {
       const st = STACK_STYLE[key];
       if (!st) throw new Error(`Ikon stack tidak dikenal: ${key}`);
-      s += `<g class="float" style="animation-delay:${(idx++ * 0.28).toFixed(2)}s">${tile(tx, y + 62, tS, st.color, { bk: st.brand, k: 0.56, r: 14, sh: 4.5 })}</g>`;
+      const hasBrand = Boolean(st.brand && si[st.brand]);
+      if (st.brand && !hasBrand) console.log(`::warning::Brand icon ${st.brand} tidak ada di simple-icons, memakai ikon cadangan untuk ${label}`);
+      const iconOpt = hasBrand ? { bk: st.brand } : { ik: st.ik || 'code' };
+      s += `<g class="float" style="animation-delay:${(idx++ * 0.28).toFixed(2)}s">${tile(tx, y + 62, tS, st.color, { ...iconOpt, k: 0.56, r: 14, sh: 4.5 })}</g>`;
       s += T(fonts.monoB, label.toUpperCase(), { size: 12.5, x: tx + tS / 2, y: y + 62 + tS + 24, anchor: 'middle', ls: 0.6, maxW: tS + tileGap - 6 });
       tx += tS + tileGap;
     }
     return s;
   };
   let y = hdr.next;
-  let b = groupSvg(groups[0], gx, y, gw, 46);
-  y += gh + gap;
+  let b = '';
   const hw = (gw - gap) / 2;
-  b += groupSvg(groups[1], gx, y, hw, 24);
-  b += groupSvg(groups[2], gx + hw + gap, y, hw, 24);
-  const ch = y + gh + 28 - cy;
+  for (let i = 0; i < groups.length;) {
+    const g = groups[i];
+    if (g.half && groups[i + 1]?.half) {
+      b += groupSvg(g, gx, y, hw, 24);
+      b += groupSvg(groups[i + 1], gx + hw + gap, y, hw, 24);
+      i += 2;
+    } else {
+      b += groupSvg(g, gx, y, gw, 46);
+      i += 1;
+    }
+    y += gh + gap;
+  }
+  const ch = y - gap + 28 - cy;
   const body = card(cx, cy, cw, ch, { r: 20, sh: 8, sw: 4 }) + hdr.svg + b;
   return svgDoc(W, cy + ch + 30, { title: 'Tech stack', desc: groups.map((g) => `${g.label}: ${g.items.map((i) => i[1]).join(', ')}`).join('. '), body });
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   3b) GAMES
+   ════════════════════════════════════════════════════════════════════════ */
+function gamesSVG(cfg) {
+  const W = 800, cx = 24, cy = 24, cw = 744;
+  const hdr = cardHeader(cx, cy, cw, { colorKey: 'purple', ik: 'gamepad', title: 'GAME FAVORIT', sub: 'Game yang saya mainkan' });
+  const colors = ['green', 'blue', 'yellow', 'pink', 'purple', 'cyan'];
+  const bx = cx + 28, right = cx + cw - 28, rowH = 52, chipH = 40;
+  let b = hdr.svg;
+  let x = bx, y = hdr.next;
+  cfg.games.forEach((name, i) => {
+    const col = colors[i % colors.length];
+    const probe = chip(name.toUpperCase(), 0, 0, { h: chipH, size: 15, ls: 1.4, padX: 18, fill: C[col], color: ICOLOR[col] });
+    if (x + probe.w > right) { x = bx; y += rowH; }
+    const c = chip(name.toUpperCase(), x, y, { h: chipH, size: 15, ls: 1.4, padX: 18, fill: C[col], color: ICOLOR[col], r: 10 });
+    b += `<g class="rise" style="animation-delay:${(i * 0.1).toFixed(2)}s">${c.svg}</g>`;
+    x += c.w + 18;
+  });
+  const ch = y + chipH + 28 - cy;
+  const body = card(cx, cy, cw, ch, { r: 20, sh: 8, sw: 4 }) + b;
+  return svgDoc(W, cy + ch + 30, { title: 'Game favorit', desc: `Game yang saya mainkan: ${cfg.games.join(', ')}.`, body });
 }
 
 /* ════════════════════════════════════════════════════════════════════════
@@ -779,6 +832,7 @@ async function main() {
     'banner.svg': bannerSVG(CONFIG),
     'about.svg': aboutSVG(CONFIG),
     'stack.svg': stackSVG(CONFIG),
+    'games.svg': gamesSVG(CONFIG),
     'stats.svg': statsSVG(CONFIG, data),
     'activity.svg': activitySVG(CONFIG, data),
     'languages.svg': languagesSVG(CONFIG, data),
