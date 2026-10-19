@@ -1,4 +1,4 @@
-name: Generate Snake
+name: Generate Profile Assets
 
 on:
   schedule:
@@ -8,12 +8,13 @@ on:
     branches: [main, master]
     paths:
       - ".github/workflows/snake.yml"
+      - ".github/profile/**"
 
 permissions:
   contents: write
 
 concurrency:
-  group: snake
+  group: profile-assets
   cancel-in-progress: true
 
 jobs:
@@ -21,14 +22,33 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 1) Ular kontribusi (palet disesuaikan dengan tema krem/kuning)
       - name: Generate snake SVG
         uses: Platane/snk/svg-only@v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
-            dist/github-snake.svg
-            dist/github-snake-dark.svg?palette=github-dark
+            dist/github-snake.svg?color_snake=#3B66E6&color_dots=#E4E0D2,#FFE98A,#FFD600,#F2A900,#111111
 
+      # 2) Kartu banner, stack, statistik, aktivitas, bahasa, kontak, footer
+      - name: Install generator deps
+        run: npm install --prefix .github/profile --no-save --no-audit --no-fund opentype.js@2.0.0 simple-icons@16 @fontsource/space-mono@5 @fontsource/space-grotesk@5
+
+      - name: Build profile cards
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_USER: ${{ github.repository_owner }}
+        run: node .github/profile/build.mjs --out dist
+
+      # 3) Publikasikan ke branch "output" (dipakai README lewat raw.githubusercontent.com)
       - name: Push to output branch
         run: |
           ls -la dist
@@ -37,6 +57,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "Generate snake"
+          git commit -m "Generate profile assets"
           git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
           git push -f origin output
